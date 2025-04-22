@@ -4,6 +4,7 @@ This software is distributed under the GNU General Public License.
 See the file LICENSE for details.
 */
 
+// do corresponding modifications here
 #include "kernel/syscall.h"
 #include "kernel/stats.h"
 #include "kernel/gfxstream.h"
