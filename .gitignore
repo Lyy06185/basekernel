@@ -11,3 +11,5 @@ cross
 tmp/
 tmp/
 *.zip
+*.o
+*.exe
