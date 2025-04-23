@@ -326,6 +326,7 @@ void process_preempt()
 	// if(allow_preempt && current && ready_list.head) {
 	// 	process_switch(PROCESS_STATE_READY);
 	// }
+	
 	//switch to the new process only if the priority of the new process is higher than the current one
 	if (allow_preempt && current && ready_list.head && ready_list.head->priority < current->node.priority) {
 		process_switch(PROCESS_STATE_READY);
