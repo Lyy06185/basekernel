@@ -27,11 +27,12 @@ See the file LICENSE for details.
 #define PROCESS_EXIT_NORMAL   0
 #define PROCESS_EXIT_KILLED   1
 
-#define PROCESS_BASE_PRIORITY 1024 //default priority for process
+#define PROCESS_BASE_PRIORITY 1024
 
 struct process {
 	struct list_node node;
 	int state;
+	int priority;
 	int exitcode;
 	int exitreason;
 	struct pagetable *pagetable;

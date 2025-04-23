@@ -1,7 +1,6 @@
 #include "library/syscalls.h"
 #include "library/task.h"
 
-//execution func for process
 void runForSeconds(int seconds) {
     unsigned int startTime;
     syscall_system_time(&startTime);

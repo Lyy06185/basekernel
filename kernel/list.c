@@ -22,7 +22,6 @@ void list_push_head(struct list *list, struct list_node *node)
 }
 
 // new function added
-// push one node to the head of the list with priority
 void list_push_head_pri(struct list *list, struct list_node *node, int pri)
 {
 	list_push_head(list, node);
@@ -45,14 +44,12 @@ void list_push_tail(struct list *list, struct list_node *node)
 }
 
 // new function added
-// push one node to the tail of the list with priority
 void list_push_tail_pri(struct list *list, struct list_node *node, int pri)
 {
 	list_push_tail(list, node);
 	node->priority = pri;
 }
 
-// modify to follow the specificed priority rule
 void list_push_priority(struct list *list, struct list_node *node, int pri)
 {
 	struct list_node *n;

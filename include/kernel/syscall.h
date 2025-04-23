@@ -21,6 +21,8 @@ typedef enum {
 	SYSCALL_PROCESS_EXEC,
 	SYSCALL_PROCESS_SELF,
 	SYSCALL_PROCESS_PRI, // new syscall: get priority of current process
+	SYSCALL_MAKE_NAMED_PIPE, // new syscall: to create a named pipe
+	SYSCALL_OPEN_NAMED_PIPE, // new syscall: open a named pipe
 	SYSCALL_PROCESS_PARENT,
 	SYSCALL_PROCESS_KILL,
 	SYSCALL_PROCESS_REAP,
