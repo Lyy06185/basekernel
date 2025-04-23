@@ -28,6 +28,7 @@ See the file LICENSE for details.
 #include "window.h"
 #include "is_valid.h"
 #include "bcache.h"
+#include "named_pipe.h"
 
 /*
 syscall_handler() is responsible for decoding system calls
@@ -49,6 +50,33 @@ For all of these system calls, a return value of zero or
 greater indiciates success, and return of less than zero
 indicates an error and the reason.
 */
+
+// new code start from here
+
+int sys_make_named_pipe(const char *fname)
+{
+	int fd = process_available_fd(current);
+	if(fd < 0) return KERROR_OUT_OF_OBJECTS;
+	struct named_pipe *existing = named_pipe_search(fname);
+	if (existing) {
+		named_pipe_delete(existing); 
+		return KERROR_FILE_EXISTS;
+	}
+	struct named_pipe *np = named_pipe_create(fname);
+	if(!np) return KERROR_OUT_OF_MEMORY;
+	current->ktable[fd] = kobject_create_named_pipe(np);
+	return fd;
+} // create a named pipe with a given name
+
+int sys_open_named_pipe(const char *fname)
+{
+	int fd = process_available_fd(current);
+	if(fd < 0) return KERROR_OUT_OF_OBJECTS;
+	struct named_pipe *np = named_pipe_search(fname);
+	if(!np) return KERROR_NOT_FOUND;
+	current->ktable[fd] = kobject_create_named_pipe(np);
+	return fd;
+} // open a named pipe with a given name 
 
 int sys_debug(const char *str)
 {
@@ -304,7 +332,6 @@ int sys_process_self()
 	return current->pid;
 }
 
-// return the priority of the current process
 int sys_process_pri()
 {
 	return current->node.priority;
@@ -617,7 +644,6 @@ int sys_device_driver_stats(const char * name, struct device_driver_stats * stat
 	return 0;
 }
 
-// do corresponding modifications here
 int32_t syscall_handler(syscall_t n, uint32_t a, uint32_t b, uint32_t c, uint32_t d, uint32_t e)
 {
 	if((n < MAX_SYSCALL) && current) {

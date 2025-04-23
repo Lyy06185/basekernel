@@ -2,8 +2,6 @@
 #include "library/stdio.h"
 #include "library/errno.h"
 
-//scheule process according to priority and print info
-//warn if failure
 void schedule_process(const char *exec, int priority, int index) {
     int pfd = syscall_open_file(KNO_STDDIR, exec, 0, 0);
 

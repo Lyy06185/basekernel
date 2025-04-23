@@ -9,5 +9,5 @@ kernel/kernel
 kernel/bootblock
 cross
 tmp/
-tmp/
 *.zip
+
