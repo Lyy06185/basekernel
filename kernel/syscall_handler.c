@@ -332,6 +332,7 @@ int sys_process_self()
 	return current->pid;
 }
 
+// return the priority of the current process
 int sys_process_pri()
 {
 	return current->node.priority;
@@ -644,6 +645,7 @@ int sys_device_driver_stats(const char * name, struct device_driver_stats * stat
 	return 0;
 }
 
+// do corresponding modifications here
 int32_t syscall_handler(syscall_t n, uint32_t a, uint32_t b, uint32_t c, uint32_t d, uint32_t e)
 {
 	if((n < MAX_SYSCALL) && current) {

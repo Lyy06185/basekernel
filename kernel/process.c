@@ -220,7 +220,7 @@ struct process *process_create()
 	}
 
 	p->state = PROCESS_STATE_READY;
-	p->priority = PROCESS_BASE_PRIORITY; // default priority
+	p->node.priority = PROCESS_BASE_PRIORITY; // default priority
 
 	return p;
 }
@@ -230,7 +230,7 @@ struct process *process_create_with_priority(int pri)
 {
 	struct process *p = process_create();
 	p->state = PROCESS_STATE_CRADLE; // the process is temporarily blocked
-	p->priority = pri;
+	p->node.priority = pri;
 	return p;
 }
 
@@ -280,6 +280,7 @@ static void process_switch(int newstate)
 
 		if(newstate == PROCESS_STATE_READY) {
 			//list_push_tail(&ready_list, &current->node);
+			//push the current node into the ready list based on priority
 			list_push_priority(&ready_list, &current->node, current->node.priority);
 		}
 		if(newstate == PROCESS_STATE_GRAVE) {
@@ -316,6 +317,7 @@ static void process_switch(int newstate)
 	interrupt_unblock();
 }
 
+//allow preemption
 int allow_preempt = 1;
 //int allow_preempt = 0;
 
@@ -324,8 +326,8 @@ void process_preempt()
 	// if(allow_preempt && current && ready_list.head) {
 	// 	process_switch(PROCESS_STATE_READY);
 	// }
-
-	if (allow_preempt && current && ready_list.head && ready_list.head->priority <= current->node.priority) {
+	//switch to the new process only if the priority of the new process is higher than the current one
+	if (allow_preempt && current && ready_list.head && ready_list.head->priority < current->node.priority) {
 		process_switch(PROCESS_STATE_READY);
 	}
 }
@@ -583,18 +585,18 @@ int process_stats(int pid, struct process_stats *s)
 	return 0;
 }
 
-// new function: unblock a process
+// new function: unblock a process and push it into the ready list
 int process_unblock(struct process *p)
 {
 	if(p->state == PROCESS_STATE_CRADLE) {
 		p->state = PROCESS_STATE_READY;
-		list_push_tail_pri(&ready_list, &p->node, p->priority);
+		list_push_tail_pri(&ready_list, &p->node, p->node.priority);
 		return 0;
 	}
 	return 1;
 }
 
-// new function: run the highest priority blocked process
+// new function: unblock and push the highest priority blocked process to ready list
 int process_run_blocked()
 {
 	struct process *p;
