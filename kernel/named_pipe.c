@@ -39,6 +39,7 @@ int named_pipe_destroy(const char *fname)
 
 struct named_pipe *named_pipe_open(struct fs_dirent *f)
 {
+	// enables processes to access a named pipe via its file system entry
 	struct named_pipe *np = diskfs_inode_get_named_pipe(f);
 	if (!np)
 	{
@@ -60,6 +61,7 @@ void named_pipe_flush(struct named_pipe *np)
 
 void named_pipe_close(struct named_pipe *np)
 {
+	// manages the closure of a named pipe reference
 	if (!np)
 		return;
 	np->refcount--;
