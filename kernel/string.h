@@ -27,6 +27,7 @@ void strtolower(char *s);
 int str2int(const char *s, int *d);
 
 const char *strchr(const char *s, char ch);
+const char *strrchr(const char *s, char ch); //new function
 
 void memset(void *d, char value, unsigned length);
 void memcpy(void *d, const void *s, unsigned length);

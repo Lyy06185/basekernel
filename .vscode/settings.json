@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "named_pipe.h": "c",
+        "window.h": "c",
+        "kobject.h": "c"
+    }
+}

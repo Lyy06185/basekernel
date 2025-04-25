@@ -97,6 +97,72 @@ struct fs_dirent *fs_resolve(const char *path)
 	return fs_dirent_traverse(fs_getcurrent(current), path);
 }
 
+struct fs_dirent *fs_mkfile(const char *path)
+{
+	// First, resolve the path to the parent directory.
+	// find the last slash in the path
+	struct fs_dirent *parent = kmalloc(sizeof(*parent));
+	if(!parent) {
+		// KERROR_NO_MEM
+		return 0;
+	}
+	const char *last_slash = strrchr(path, '/');
+	if(last_slash) {
+		// Copy the path up to the last slash.
+		char *parent_path = kmalloc(last_slash - path + 1);
+		strncpy(parent_path, path, last_slash - path);
+		parent_path[last_slash - path] = 0;
+
+		// Resolve the parent directory.
+		parent = fs_resolve(parent_path);
+		kfree(parent_path);
+	}
+	else {
+		// If there is no slash, the parent directory is the current directory.
+		parent = fs_getcurrent(current);
+	}
+	if(!parent) {
+		// KERROR_NOT_FOUND
+		return 0;
+	}
+
+	const char *name = last_slash ? last_slash + 1 : path;
+	// Create the file in the parent directory.
+	struct fs_dirent *file = fs_dirent_mkfile(parent, name);
+	fs_dirent_close(parent);
+	return file;
+}
+
+int fs_remove(const char *path)
+{
+	struct fs_dirent *parent = kmalloc(sizeof(*parent));
+	if(!parent) {
+		// KERROR_NO_MEM
+		return 0;
+	}
+	const char *last_slash = strrchr(path, '/');
+	if(last_slash) {
+		char *parent_path = kmalloc(last_slash - path + 1);
+		strncpy(parent_path, path, last_slash - path);
+		parent_path[last_slash - path] = 0;
+
+		parent = fs_resolve(parent_path);
+		kfree(parent_path);
+	}
+	else {
+		parent = fs_getcurrent(current);
+	}
+	if(!parent) {
+		// KERROR_NOT_FOUND
+		return 0;
+	}
+
+	const char *name = last_slash ? last_slash + 1 : path;
+	int res = fs_dirent_remove(parent, name);
+	fs_dirent_close(parent);
+	return res;
+}
+
 void fs_register(struct fs *f)
 {
 	f->next = fs_list;
