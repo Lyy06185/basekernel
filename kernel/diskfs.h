@@ -8,10 +8,12 @@ See the file LICENSE for details.
 #define DISKFS_H
 
 #include "kernel/types.h"
+#include "named_pipe.h"
+#include "fs.h"
 
 #define DISKFS_MAGIC 0xabcd4321
 #define DISKFS_BLOCK_SIZE 4096
-#define DISKFS_DIRECT_POINTERS 6
+#define DISKFS_DIRECT_POINTERS 30 //allow more files
 #define DISKFS_INODES_PER_BLOCK (DISKFS_BLOCK_SIZE/sizeof(struct diskfs_inode))
 #define DISKFS_ITEMS_PER_BLOCK (DISKFS_BLOCK_SIZE/sizeof(struct diskfs_item))
 #define DISKFS_POINTERS_PER_BLOCK (DISKFS_BLOCK_SIZE/sizeof(uint32_t))
@@ -32,7 +34,11 @@ struct diskfs_inode {
 	uint32_t size;
 	uint32_t direct[DISKFS_DIRECT_POINTERS];
 	uint32_t indirect;
+	struct named_pipe *i_pipe; //newly added pointer
 };
+
+int diskfs_inode_bind_named_pipe(struct fs_dirent *d, struct named_pipe *np );
+struct named_pipe * diskfs_inode_get_named_pipe( struct fs_dirent *d );
 
 #define DISKFS_ITEM_BLANK 0
 #define DISKFS_ITEM_FILE 1

@@ -116,6 +116,18 @@ const char *strchr(const char *s, char ch)
 	return 0;
 }
 
+//returns the last occurrence of given char in the cstring
+const char *strrchr(const char *s, char ch)
+{
+	const char *last = 0;
+	while(*s) {
+		if(*s == ch)
+			last = s;
+		s++;
+	}
+	return last;
+}
+
 char *strtok(char *s, const char *delim)
 {
 	static char *oldword = 0;

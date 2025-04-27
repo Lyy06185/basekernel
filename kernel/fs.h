@@ -27,6 +27,16 @@ process and returns a dirent.
 struct fs_dirent *fs_resolve(const char *path);
 
 /*
+fs_mkfile creates a new file at the given path.
+It first resolves the path to the parent directory, then
+creates the file in that directory.
+Similarly, fs_remove deletes a file.
+*/
+
+struct fs_dirent *fs_mkfile(const char *path);
+int fs_remove(const char *path);
+
+/*
 fs_lookup returns the filesystem driver corresponding to
 the given name, such as "cdromfs" or "diskfs"
 */

@@ -250,6 +250,18 @@ int diskfs_inode_write( struct fs_dirent *d, struct diskfs_block *b, uint32_t bl
 	return diskfs_data_block_write(d->volume,b,actual);
 }
 
+int diskfs_inode_bind_named_pipe(struct fs_dirent *d, struct named_pipe *np )
+{
+	d->disk.i_pipe = np;
+	diskfs_inode_save(d->volume,d->inumber,&d->disk);
+	return 1;
+}
+
+struct named_pipe * diskfs_inode_get_named_pipe( struct fs_dirent *d )
+{
+	return d->disk.i_pipe;
+}
+
 struct fs_dirent * diskfs_dirent_create( struct fs_volume *volume, int inumber, int type )
 {
 	struct fs_dirent *d = kmalloc(sizeof(*d));
@@ -514,7 +526,6 @@ extern struct fs disk_fs;
 
 struct fs_volume * diskfs_volume_open( struct device *device )
 {
-	diskfs_volume_format(device);
 	struct diskfs_block *b = page_alloc(0);
 
 	printf("diskfs: opening device %s unit %d\n",device_name(device),device_unit(device));
