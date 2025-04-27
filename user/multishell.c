@@ -5,7 +5,7 @@
 #include "library/nwindow.h"
 #include "library/errno.h"
 
-#define NWINDOWS 4
+#define NWINDOWS 2
 
 #define WINDOW_TITLE_HEIGHT 14
 #define WINDOW_TITLE_ACTIVE_COLOR 100,100,255
@@ -32,8 +32,6 @@ struct window {
 struct nwindow *nw = 0;
 
 struct window windows[NWINDOWS] = {
-	{ .x=0, .y=0, .console_mode=1, .exec = "bin/shell.exe", .arg=0, .argc = 2 },
-	{ .x=0, .y=0, .console_mode=1, .exec = "bin/shell.exe", .arg=0, .argc = 2 },
 	{ .x=0, .y=0, .console_mode=1, .exec = "bin/shell.exe", .arg=0, .argc = 2 },
 	{ .x=0, .y=0, .console_mode=1, .exec = "bin/shell.exe", .arg=0, .argc = 2 },
 };
@@ -87,13 +85,13 @@ int main(int argc, char *argv[])
 	/* Distribute window locations across screen. */
 	
 	int i;
+	
 	for(i=0;i<NWINDOWS;i++) {
 		struct window *w = &windows[i];
-		w->x = i%2 ? nw_width(nw)/2 : 0;
-		w->y = i/2 ? nw_height(nw)/2 : 0;
-		w->w = nw_width(nw)/2-2;
-		w->h = nw_height(nw)/2-2;
-		//printf("window %d %d %d %d %d %s\n",i,w->w,w->h,w->x,w->y,w->exec);
+		w->x = i * (nw_width(nw)/2);
+		w->y = 0;
+		w->w = nw_width(nw)/2 - 2;
+		w->h = nw_height(nw) - 2;
 	}
 
 	/* Open each window and connect the various pipes. */
