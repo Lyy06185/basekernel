@@ -17,7 +17,7 @@ int main()
   }
   printf("=== Successfully created named pipe at %s. ===\n", fname);
   printf("=== Waiting for message... ===\n");
-  char *buffer = malloc(25);
+  char *buffer = malloc(35);
   syscall_object_read(fd, buffer, 30, 0);
   printf("%s\n", buffer);
   syscall_destroy_named_pipe(fname);
